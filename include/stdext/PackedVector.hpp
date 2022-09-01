@@ -1,9 +1,9 @@
-#ifndef PACKED_VECTOR_HPP
-#define PACKED_VECTOR_HPP
+#ifndef STDEXT_PACKED_VECTOR_HPP
+#define STDEXT_PACKED_VECTOR_HPP
 
 #include <algorithm>
 
-namespace se::utils {
+namespace stdext {
 
 	template <typename T, typename A>
 	PackedVector<T, A>::PackedVector(const PackedVector& other) :
@@ -223,7 +223,7 @@ namespace se::utils {
 
 	template <typename T, typename A>
 	template <bool isConst>
-	PackedVector<T, A>::PVIterator<isConst>&
+	typename PackedVector<T, A>::template PVIterator<isConst>&
 		PackedVector<T, A>::PVIterator<isConst>::setIndex(size_type index)
 	{
 		mIndex = index;
@@ -233,7 +233,7 @@ namespace se::utils {
 
 	template <typename T, typename A>
 	template <bool isConst>
-	PackedVector<T, A>::PVIterator<isConst>&
+	typename PackedVector<T, A>::template PVIterator<isConst>&
 		PackedVector<T, A>::PVIterator<isConst>::operator++()
 	{
 		do {
@@ -247,7 +247,7 @@ namespace se::utils {
 
 	template <typename T, typename A>
 	template <bool isConst>
-	PackedVector<T, A>::PVIterator<isConst>
+	typename PackedVector<T, A>::template PVIterator<isConst>
 		PackedVector<T, A>::PVIterator<isConst>::operator++(int)
 	{
 		PVIterator ret(*this);
@@ -258,7 +258,7 @@ namespace se::utils {
 
 	template <typename T, typename A>
 	template <bool isConst>
-	PackedVector<T, A>::PVIterator<isConst>&
+	typename PackedVector<T, A>::template PVIterator<isConst>&
 		PackedVector<T, A>::PVIterator<isConst>::operator--()
 	{
 		do {
@@ -272,7 +272,7 @@ namespace se::utils {
 
 	template <typename T, typename A>
 	template <bool isConst>
-	PackedVector<T, A>::PVIterator<isConst>
+	typename PackedVector<T, A>::template PVIterator<isConst>
 		PackedVector<T, A>::PVIterator<isConst>::operator--(int)
 	{
 		PVIterator ret(*this);
@@ -282,4 +282,4 @@ namespace se::utils {
 
 }
 
-#endif		// PACKED_VECTOR_HPP
+#endif		// STDEXT_PACKED_VECTOR_HPP

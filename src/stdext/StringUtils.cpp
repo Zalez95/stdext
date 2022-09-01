@@ -1,8 +1,8 @@
 #include <cctype>
 #include <algorithm>
-#include "se/utils/StringUtils.h"
+#include "stdext/StringUtils.h"
 
-namespace se::utils {
+namespace stdext {
 
 	void trimLeft(std::string& str)
 	{

@@ -1,5 +1,5 @@
-#ifndef THREAD_POOL_H
-#define THREAD_POOL_H
+#ifndef STDEXT_THREAD_POOL_H
+#define STDEXT_THREAD_POOL_H
 
 #include <deque>
 #include <memory>
@@ -10,7 +10,7 @@
 #include <future>
 #include <chrono>
 
-namespace se::utils {
+namespace stdext {
 
 	template<typename T>
 	bool is_ready(std::future<T> const& f)
@@ -89,4 +89,4 @@ namespace se::utils {
 
 }
 
-#endif		// THREAD_POOL_H
+#endif		// STDEXT_THREAD_POOL_H

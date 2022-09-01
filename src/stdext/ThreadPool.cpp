@@ -1,6 +1,6 @@
-#include "se/utils/ThreadPool.h"
+#include "stdext/ThreadPool.h"
 
-namespace se::utils {
+namespace stdext {
 
 	ThreadPool::ThreadPool(std::size_t numThreads) :
 		mThreads(nullptr), mNumThreads(numThreads), mStop(false)

@@ -1,10 +1,10 @@
-#ifndef FIXED_VECTOR_HPP
-#define FIXED_VECTOR_HPP
+#ifndef STDEXT_FIXED_VECTOR_HPP
+#define STDEXT_FIXED_VECTOR_HPP
 
 #include <memory>
 #include <algorithm>
 
-namespace se::utils {
+namespace stdext {
 
 	template <typename T, std::size_t N>
 	FixedVector<T, N>::FixedVector(const FixedVector& other) : mNumElements(other.mNumElements)
@@ -179,4 +179,4 @@ namespace se::utils {
 
 }
 
-#endif		// FIXED_VECTOR_HPP
+#endif		// STDEXT_FIXED_VECTOR_HPP

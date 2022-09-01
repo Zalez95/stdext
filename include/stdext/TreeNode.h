@@ -1,10 +1,10 @@
-#ifndef TREE_NODE_H
-#define TREE_NODE_H
+#ifndef STDEXT_TREE_NODE_H
+#define STDEXT_TREE_NODE_H
 
 #include <deque>
 #include <memory>
 
-namespace se::utils {
+namespace stdext {
 
 	/** The algorithms to use for visiting the TreeNodes */
 	enum class Traversal { BFS, DFSPreOrder, DFSPostOrder, Children };
@@ -329,4 +329,4 @@ namespace se::utils {
 
 #include "TreeNode.hpp"
 
-#endif		// TREE_NODE_H
+#endif		// STDEXT_TREE_NODE_H

@@ -1,11 +1,11 @@
-#ifndef FIXED_VECTOR_H
-#define FIXED_VECTOR_H
+#ifndef STDEXT_FIXED_VECTOR_H
+#define STDEXT_FIXED_VECTOR_H
 
 #include <cstddef>
 #include <iterator>
 #include <initializer_list>
 
-namespace se::utils {
+namespace stdext {
 
 	/**
 	 * Class FixedVector, a FixedVector is a container with a compile-time
@@ -244,4 +244,4 @@ namespace se::utils {
 
 #include "FixedVector.hpp"
 
-#endif		// FIXED_VECTOR_H
+#endif		// STDEXT_FIXED_VECTOR_H

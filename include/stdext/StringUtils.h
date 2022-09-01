@@ -1,12 +1,12 @@
-#ifndef STRING_UTILS_H
-#define STRING_UTILS_H
+#ifndef STDEXT_STRING_UTILS_H
+#define STDEXT_STRING_UTILS_H
 
 #include <array>
 #include <vector>
 #include <string>
 #include <streambuf>
 
-namespace se::utils {
+namespace stdext {
 
 	/**
 	 * Class ArrayStreambuf, it's an streambuf with a compile-time
@@ -51,8 +51,7 @@ namespace se::utils {
 		/** Sets mBuffer as the buffer to use by the parent streambuf */
 		void setBuffer()
 		{
-			Base::setp(mBuffer.data(), mBuffer.data() + Size);
-			Base::setg(mBuffer.data(), mBuffer.data(), mBuffer.data() + Size);
+			Base::setp(mBuffer.begin(), mBuffer.end());
 		};
 	};
 
@@ -83,4 +82,4 @@ namespace se::utils {
 
 }
 
-#endif		// STRING_UTILS_H
+#endif		// STDEXT_STRING_UTILS_H

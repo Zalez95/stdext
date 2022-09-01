@@ -1,12 +1,10 @@
-#ifndef MATH_UTILS_H
-#define MATH_UTILS_H
+#ifndef STDEXT_MATH_UTILS_H
+#define STDEXT_MATH_UTILS_H
 
 #include <array>
 #include <vector>
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
 
-namespace se::utils {
+namespace stdext {
 
 	/** It combines multiple hash values
 	 *
@@ -59,4 +57,4 @@ namespace se::utils {
 
 }
 
-#endif		// MATH_UTILS_H
+#endif		// STDEXT_MATH_UTILS_H

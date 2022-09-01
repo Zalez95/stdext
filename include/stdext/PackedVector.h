@@ -1,9 +1,9 @@
-#ifndef PACKED_VECTOR_H
-#define PACKED_VECTOR_H
+#ifndef STDEXT_PACKED_VECTOR_H
+#define STDEXT_PACKED_VECTOR_H
 
 #include <vector>
 
-namespace se::utils {
+namespace stdext {
 
 	/**
 	 * Class PackedVector, it works as an usual vector but it also caches
@@ -291,4 +291,4 @@ namespace se::utils {
 
 #include "PackedVector.hpp"
 
-#endif		// PACKED_VECTOR_H
+#endif		// STDEXT_PACKED_VECTOR_H

@@ -1,7 +1,7 @@
-#ifndef TREE_NODE_HPP
-#define TREE_NODE_HPP
+#ifndef STDEXT_TREE_NODE_HPP
+#define STDEXT_TREE_NODE_HPP
 
-namespace se::utils {
+namespace stdext {
 
 	template <typename T>
 	TreeNode<T>::TreeNode(const TreeNode& other) :
@@ -401,4 +401,4 @@ namespace se::utils {
 
 }
 
-#endif		// TREE_NODE_HPP
+#endif		// STDEXT_TREE_NODE_HPP
