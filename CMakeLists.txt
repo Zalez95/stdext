@@ -1,5 +1,4 @@
-cmake_minimum_required(VERSION 3.11 FATAL_ERROR)
-include(GNUInstallDirs)
+cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
 ###############################################################################
 # 									STDEXT
@@ -8,7 +7,8 @@ include(GNUInstallDirs)
 project(stdext LANGUAGES CXX)
 set(STDEXT_VERSION_MAJOR "1")
 set(STDEXT_VERSION_MINOR "0")
-set(STDEXT_VERSION "${STDEXT_VERSION_MAJOR}.${STDEXT_VERSION_MINOR}")
+set(STDEXT_VERSION_REVISION "0")
+set(STDEXT_VERSION "${STDEXT_VERSION_MAJOR}.${STDEXT_VERSION_MINOR}.${STDEXT_VERSION_REVISION}")
 
 # Find the library source files
 file(GLOB_RECURSE STDEXT_SOURCES "src/*.cpp")
@@ -34,6 +34,11 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 endif()
 
 # Install the target
+set_target_properties(stdext PROPERTIES
+	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}"
+	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}"
+	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}"
+)
 install(TARGETS stdext EXPORT stdextTargets)
 install(EXPORT stdextTargets
 FILE stdextTargets.cmake
