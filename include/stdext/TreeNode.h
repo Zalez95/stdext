@@ -11,13 +11,14 @@ namespace stdext {
 
 
 	/**
-	 * Class TreeNode, it's a hierarchical data structure in which each TreeNode
-	 * holds part of the data. A tree is a kind of acyclic graph with just one
-	 * root node. Each node of the tree can be seen as a subtree, and its
-	 * represented in a parent-child-sibling structure for minimizing the memory
-	 * storage requirements.
+	 * Class TreeNode, it's a hierarchical container in which each node of the
+	 * tree holds part of the data of @tparam type T. A tree is a kind of
+	 * acyclic graph with just one root node. In this tree, each node can also
+	 * be seen as a subtree. Internally each node stores its relationships in a
+	 * parent-child-sibling structure for minimizing the memory storage
+	 * requirements.
 	 * The TreeNode also has functions for iterating it with different
-	 * algorithms and also finding Nodes by the data that each hold
+	 * algorithms and also finding Nodes by the data that each one hold.
 	 */
 	template <typename T>
 	class TreeNode

@@ -9,8 +9,8 @@
 namespace stdext {
 
 	/**
-	 * Class ArrayStreambuf, it's an streambuf with a compile-time
-	 * fixed size
+	 * Class ArrayStreambuf, it's an streambuf of characters of type
+	 * @tparam CharT with a compile-time maximum size of @tparam Size elements
 	 */
 	template <typename CharT, std::streamsize Size>
 	class ArrayStreambuf : public std::basic_streambuf<CharT>

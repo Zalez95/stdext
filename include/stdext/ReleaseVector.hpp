@@ -1,12 +1,12 @@
-#ifndef STDEXT_PACKED_VECTOR_HPP
-#define STDEXT_PACKED_VECTOR_HPP
+#ifndef STDEXT_RELEASE_VECTOR_HPP
+#define STDEXT_RELEASE_VECTOR_HPP
 
 #include <algorithm>
 
 namespace stdext {
 
 	template <typename T, typename A>
-	PackedVector<T, A>::PackedVector(const PackedVector& other) :
+	ReleaseVector<T, A>::ReleaseVector(const ReleaseVector& other) :
 		mElements(nullptr), mCapacity(0),
 		mEndIndex(other.mEndIndex), mReleasedIndices(other.mReleasedIndices)
 	{
@@ -18,7 +18,7 @@ namespace stdext {
 
 
 	template <typename T, typename A>
-	PackedVector<T, A>::PackedVector(PackedVector&& other) :
+	ReleaseVector<T, A>::ReleaseVector(ReleaseVector&& other) :
 		mElements(other.mElements), mCapacity(other.mCapacity),
 		mEndIndex(other.mEndIndex), mReleasedIndices(std::move(other.mReleasedIndices))
 	{
@@ -29,7 +29,7 @@ namespace stdext {
 
 
 	template <typename T, typename A>
-	PackedVector<T, A>::PackedVector(
+	ReleaseVector<T, A>::ReleaseVector(
 		const T* elements, std::size_t capacity, std::size_t size,
 		const std::size_t* releasedIndices, std::size_t numReleasedIndices
 	) : mElements(nullptr), mCapacity(0), mEndIndex(0)
@@ -42,7 +42,7 @@ namespace stdext {
 
 
 	template <typename T, typename A>
-	PackedVector<T, A>::~PackedVector()
+	ReleaseVector<T, A>::~ReleaseVector()
 	{
 		clear();
 		mAllocator.deallocate(mElements, mCapacity);
@@ -50,7 +50,7 @@ namespace stdext {
 
 
 	template <typename T, typename A>
-	PackedVector<T, A>& PackedVector<T, A>::operator=(const PackedVector& other)
+	ReleaseVector<T, A>& ReleaseVector<T, A>::operator=(const ReleaseVector& other)
 	{
 		clear();
 
@@ -66,7 +66,7 @@ namespace stdext {
 
 
 	template <typename T, typename A>
-	PackedVector<T, A>& PackedVector<T, A>::operator=(PackedVector&& other)
+	ReleaseVector<T, A>& ReleaseVector<T, A>::operator=(ReleaseVector&& other)
 	{
 		clear();
 
@@ -84,7 +84,7 @@ namespace stdext {
 
 
 	template <typename T, typename A>
-	bool operator==(const PackedVector<T, A>& cv1, const PackedVector<T, A>& cv2)
+	bool operator==(const ReleaseVector<T, A>& cv1, const ReleaseVector<T, A>& cv2)
 	{
 		return (cv1.mElements == cv2.mElements)
 			&& (cv1.mCapacity == cv2.mCapacity)
@@ -94,14 +94,14 @@ namespace stdext {
 
 
 	template <typename T, typename A>
-	bool operator!=(const PackedVector<T, A>& cv1, const PackedVector<T, A>& cv2)
+	bool operator!=(const ReleaseVector<T, A>& cv1, const ReleaseVector<T, A>& cv2)
 	{
 		return !(cv1 == cv2);
 	}
 
 
 	template <typename T, typename A>
-	void PackedVector<T, A>::reserve(std::size_t n)
+	void ReleaseVector<T, A>::reserve(std::size_t n)
 	{
 		if (n > mCapacity) {
 			T* buffer = mAllocator.allocate(n);
@@ -121,7 +121,7 @@ namespace stdext {
 
 
 	template <typename T, typename A>
-	void PackedVector<T, A>::clear()
+	void ReleaseVector<T, A>::clear()
 	{
 		for (auto it = begin(); it != end();) {
 			it = erase(it);
@@ -131,7 +131,7 @@ namespace stdext {
 
 	template <typename T, typename A>
 	template <typename... Args>
-	typename PackedVector<T, A>::iterator PackedVector<T, A>::emplace(Args&&... args)
+	typename ReleaseVector<T, A>::iterator ReleaseVector<T, A>::emplace(Args&&... args)
 	{
 		size_type index;
 		if (mReleasedIndices.empty()) {
@@ -154,7 +154,7 @@ namespace stdext {
 
 
 	template <typename T, typename A>
-	typename PackedVector<T, A>::iterator PackedVector<T, A>::erase(const_iterator it)
+	typename ReleaseVector<T, A>::iterator ReleaseVector<T, A>::erase(const_iterator it)
 	{
 		iterator ret = it;
 		++ret;
@@ -170,7 +170,7 @@ namespace stdext {
 
 
 	template <typename T, typename A>
-	bool PackedVector<T, A>::isActive(size_type i) const
+	bool ReleaseVector<T, A>::isActive(size_type i) const
 	{
 		return (i < mEndIndex)
 			&& (std::find(mReleasedIndices.begin(), mReleasedIndices.end(), i) == mReleasedIndices.end());
@@ -179,7 +179,7 @@ namespace stdext {
 
 	template <typename T, typename A>
 	template <typename U>
-	void PackedVector<T, A>::replicate(const PackedVector<U>& other, const T& value)
+	void ReleaseVector<T, A>::replicate(const ReleaseVector<U>& other, const T& value)
 	{
 		clear();
 
@@ -194,7 +194,7 @@ namespace stdext {
 
 	template <typename T, typename A>
 	template <bool isConst>
-	PackedVector<T, A>::PVIterator<isConst>::PVIterator(VectorType* vector) :
+	ReleaseVector<T, A>::PVIterator<isConst>::PVIterator(VectorType* vector) :
 		mVector(vector), mIndex(0)
 	{
 		if (!mVector->isActive(mIndex) && (mVector->mEndIndex > 0)) {
@@ -205,13 +205,13 @@ namespace stdext {
 
 	template <typename T, typename A>
 	template <bool isConst>
-	PackedVector<T, A>::PVIterator<isConst>::operator
-		PackedVector<T, A>::PVIterator<!isConst>() const
+	ReleaseVector<T, A>::PVIterator<isConst>::operator
+		ReleaseVector<T, A>::PVIterator<!isConst>() const
 	{
 		PVIterator<!isConst> ret(nullptr, mIndex);
 
 		if constexpr (isConst) {
-			ret.mVector = const_cast<PackedVector*>(mVector);
+			ret.mVector = const_cast<ReleaseVector*>(mVector);
 		}
 		else {
 			ret.mVector = mVector;
@@ -223,8 +223,8 @@ namespace stdext {
 
 	template <typename T, typename A>
 	template <bool isConst>
-	typename PackedVector<T, A>::template PVIterator<isConst>&
-		PackedVector<T, A>::PVIterator<isConst>::setIndex(size_type index)
+	typename ReleaseVector<T, A>::template PVIterator<isConst>&
+		ReleaseVector<T, A>::PVIterator<isConst>::setIndex(size_type index)
 	{
 		mIndex = index;
 		return *this;
@@ -233,8 +233,8 @@ namespace stdext {
 
 	template <typename T, typename A>
 	template <bool isConst>
-	typename PackedVector<T, A>::template PVIterator<isConst>&
-		PackedVector<T, A>::PVIterator<isConst>::operator++()
+	typename ReleaseVector<T, A>::template PVIterator<isConst>&
+		ReleaseVector<T, A>::PVIterator<isConst>::operator++()
 	{
 		do {
 			++mIndex;
@@ -247,8 +247,8 @@ namespace stdext {
 
 	template <typename T, typename A>
 	template <bool isConst>
-	typename PackedVector<T, A>::template PVIterator<isConst>
-		PackedVector<T, A>::PVIterator<isConst>::operator++(int)
+	typename ReleaseVector<T, A>::template PVIterator<isConst>
+		ReleaseVector<T, A>::PVIterator<isConst>::operator++(int)
 	{
 		PVIterator ret(*this);
 		operator++();
@@ -258,8 +258,8 @@ namespace stdext {
 
 	template <typename T, typename A>
 	template <bool isConst>
-	typename PackedVector<T, A>::template PVIterator<isConst>&
-		PackedVector<T, A>::PVIterator<isConst>::operator--()
+	typename ReleaseVector<T, A>::template PVIterator<isConst>&
+		ReleaseVector<T, A>::PVIterator<isConst>::operator--()
 	{
 		do {
 			--mIndex;
@@ -272,8 +272,8 @@ namespace stdext {
 
 	template <typename T, typename A>
 	template <bool isConst>
-	typename PackedVector<T, A>::template PVIterator<isConst>
-		PackedVector<T, A>::PVIterator<isConst>::operator--(int)
+	typename ReleaseVector<T, A>::template PVIterator<isConst>
+		ReleaseVector<T, A>::PVIterator<isConst>::operator--(int)
 	{
 		PVIterator ret(*this);
 		operator--();
@@ -282,4 +282,4 @@ namespace stdext {
 
 }
 
-#endif		// STDEXT_PACKED_VECTOR_HPP
+#endif		// STDEXT_RELEASE_VECTOR_HPP

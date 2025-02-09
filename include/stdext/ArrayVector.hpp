@@ -1,5 +1,5 @@
-#ifndef STDEXT_FIXED_VECTOR_HPP
-#define STDEXT_FIXED_VECTOR_HPP
+#ifndef STDEXT_ARRAY_VECTOR_HPP
+#define STDEXT_ARRAY_VECTOR_HPP
 
 #include <memory>
 #include <algorithm>
@@ -7,14 +7,14 @@
 namespace stdext {
 
 	template <typename T, std::size_t N>
-	FixedVector<T, N>::FixedVector(const FixedVector& other) : mNumElements(other.mNumElements)
+	ArrayVector<T, N>::ArrayVector(const ArrayVector& other) : mNumElements(other.mNumElements)
 	{
 		std::uninitialized_copy(other.begin(), other.end(), reinterpret_cast<T*>(mData));
 	}
 
 
 	template <typename T, std::size_t N>
-	FixedVector<T, N>::FixedVector(FixedVector&& other) : mNumElements(other.mNumElements)
+	ArrayVector<T, N>::ArrayVector(ArrayVector&& other) : mNumElements(other.mNumElements)
 	{
 		std::uninitialized_move(other.begin(), other.end(), reinterpret_cast<T*>(mData));
 		other.clear();
@@ -22,7 +22,7 @@ namespace stdext {
 
 
 	template <typename T, std::size_t N>
-	FixedVector<T, N>::FixedVector(std::initializer_list<T> list) : mNumElements(0)
+	ArrayVector<T, N>::ArrayVector(std::initializer_list<T> list) : mNumElements(0)
 	{
 		size_type i = 0;
 		for (const T& member : list) {
@@ -36,21 +36,21 @@ namespace stdext {
 
 	template <typename T, std::size_t N>
 	template <typename InputIterator>
-	FixedVector<T, N>::FixedVector(InputIterator first, InputIterator last) : mNumElements(0)
+	ArrayVector<T, N>::ArrayVector(InputIterator first, InputIterator last) : mNumElements(0)
 	{
 		std::copy(first, last, std::back_inserter(*this));
 	}
 
 
 	template <typename T, std::size_t N>
-	FixedVector<T, N>::~FixedVector()
+	ArrayVector<T, N>::~ArrayVector()
 	{
 		clear();
 	}
 
 
 	template <typename T, std::size_t N>
-	FixedVector<T, N>& FixedVector<T, N>::operator=(const FixedVector& other)
+	ArrayVector<T, N>& ArrayVector<T, N>::operator=(const ArrayVector& other)
 	{
 		clear();
 		mNumElements = other.mNumElements;
@@ -61,7 +61,7 @@ namespace stdext {
 
 
 	template <typename T, std::size_t N>
-	FixedVector<T, N>& FixedVector<T, N>::operator=(FixedVector&& other)
+	ArrayVector<T, N>& ArrayVector<T, N>::operator=(ArrayVector&& other)
 	{
 		clear();
 		mNumElements = other.mNumElements;
@@ -73,7 +73,7 @@ namespace stdext {
 
 
 	template <typename T, std::size_t N>
-	bool operator==(const FixedVector<T, N>& lhs, const FixedVector<T, N>& rhs)
+	bool operator==(const ArrayVector<T, N>& lhs, const ArrayVector<T, N>& rhs)
 	{
 		return (lhs.mNumElements == rhs.mNumElements)
 			&& std::equal(lhs.begin(), lhs.end(), rhs.end());
@@ -81,14 +81,14 @@ namespace stdext {
 
 
 	template <typename T, std::size_t N>
-	bool operator!=(const FixedVector<T, N>& lhs, const FixedVector<T, N>& rhs)
+	bool operator!=(const ArrayVector<T, N>& lhs, const ArrayVector<T, N>& rhs)
 	{
 		return !(lhs == rhs);
 	}
 
 
 	template <typename T, std::size_t N>
-	void FixedVector<T, N>::clear()
+	void ArrayVector<T, N>::clear()
 	{
 		while (!empty()) {
 			pop_back();
@@ -97,7 +97,7 @@ namespace stdext {
 
 
 	template <typename T, std::size_t N>
-	void FixedVector<T, N>::resize(size_type numElements, const T& value)
+	void ArrayVector<T, N>::resize(size_type numElements, const T& value)
 	{
 		if (numElements > N) {
 			numElements = N;
@@ -114,7 +114,7 @@ namespace stdext {
 
 
 	template <typename T, std::size_t N>
-	void FixedVector<T, N>::push_back(const T& element)
+	void ArrayVector<T, N>::push_back(const T& element)
 	{
 		emplace_back(element);
 	}
@@ -122,7 +122,7 @@ namespace stdext {
 
 	template <typename T, std::size_t N>
 	template <typename... Args>
-	T& FixedVector<T, N>::emplace_back(Args&&... args)
+	T& ArrayVector<T, N>::emplace_back(Args&&... args)
 	{
 		new (mData + mNumElements * sizeof(T)) T(std::forward<Args>(args)...);
 		mNumElements++;
@@ -132,7 +132,7 @@ namespace stdext {
 
 
 	template <typename T, std::size_t N>
-	void FixedVector<T, N>::pop_back()
+	void ArrayVector<T, N>::pop_back()
 	{
 		back().~T();
 		mNumElements--;
@@ -140,7 +140,7 @@ namespace stdext {
 
 
 	template <typename T, std::size_t N>
-	typename FixedVector<T, N>::iterator FixedVector<T, N>::insert(const_iterator it, const T& value)
+	typename ArrayVector<T, N>::iterator ArrayVector<T, N>::insert(const_iterator it, const T& value)
 	{
 		iterator itCopy = const_cast<iterator>(it);
 
@@ -156,14 +156,14 @@ namespace stdext {
 
 	template <typename T, std::size_t N>
 	template <typename... Args>
-	typename FixedVector<T, N>::iterator FixedVector<T, N>::emplace(const_iterator it, Args&&... args)
+	typename ArrayVector<T, N>::iterator ArrayVector<T, N>::emplace(const_iterator it, Args&&... args)
 	{
 		return insert(it, T(std::forward<Args>(args)...));
 	}
 
 
 	template <typename T, std::size_t N>
-	typename FixedVector<T, N>::iterator FixedVector<T, N>::erase(const_iterator it)
+	typename ArrayVector<T, N>::iterator ArrayVector<T, N>::erase(const_iterator it)
 	{
 		iterator itCopy = const_cast<iterator>(it);
 
@@ -179,4 +179,4 @@ namespace stdext {
 
 }
 
-#endif		// STDEXT_FIXED_VECTOR_HPP
+#endif		// STDEXT_ARRAY_VECTOR_HPP

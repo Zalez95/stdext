@@ -1,28 +1,32 @@
-#ifndef STDEXT_PACKED_VECTOR_H
-#define STDEXT_PACKED_VECTOR_H
+#ifndef STDEXT_RELEASE_VECTOR_H
+#define STDEXT_RELEASE_VECTOR_H
 
 #include <vector>
 
 namespace stdext {
 
 	/**
-	 * Class PackedVector, it works as an usual vector but it also caches
-	 * the released elements instead of erasing them for preventing the old
-	 * indices pointing to the vector from being invalidated.
+	 * Class ReleaseVector, it works as an usual vector of elements of type
+	 * @tparam T but it also stores the removed elements instead of erasing
+	 * them for reusing them later and preventing the old indices pointing to
+	 * the vector from being invalidated. All the memory allocation will be
+	 * done using the allocator @tparam A.
 	 *
 	 * @note	it doesn't prevent from pointer invalidations due to the
-	 *			increment of the vector size with new allocations, also the
-	 *			released elements will be reused in the following allocations
+	 *			increment of the vector size with new allocations
 	 */
 	template <typename T, typename A = std::allocator<T>>
-	class PackedVector
+	class ReleaseVector
 	{
+	private:
+		static_assert(std::is_constructible<T, T>::value,
+			"result type must be constructible from input type");
 	public:		// Nested types
 		template <typename U, typename B>
-		friend class PackedVector;
+		friend class ReleaseVector;
 
 		/** Class PVIterator, it's the class used to iterate through the
-		 * elements of a PackedVector */
+		 * elements of a ReleaseVector */
 		template <bool isConst>
 		class PVIterator
 		{
@@ -31,7 +35,7 @@ namespace stdext {
 			friend class PVIterator;
 
 			using VectorType = std::conditional_t<isConst,
-				const PackedVector, PackedVector
+				const ReleaseVector, ReleaseVector
 			>;
 
 			using size_type			= typename VectorType::size_type;
@@ -50,7 +54,7 @@ namespace stdext {
 
 		public:		// Functions
 			/** Creates a new PVIterator located at the initial valid position
-			 * of the given PackedVector (begin)
+			 * of the given ReleaseVector (begin)
 			 *
 			 * @param	vector a pointer to the vector to iterate */
 			PVIterator(VectorType* vector);
@@ -134,111 +138,111 @@ namespace stdext {
 		using const_iterator	= PVIterator<true>;
 
 	private:	// Attributes
-		/** A pointer to the Elements of the PackedVector */
+		/** A pointer to the Elements of the ReleaseVector */
 		T* mElements;
 
-		/** The number of Elements reserved in the PackedVector */
+		/** The number of Elements reserved in the ReleaseVector */
 		size_type mCapacity;
 
-		/** The index of the past-the-end Element of the PackedVector.
+		/** The index of the past-the-end Element of the ReleaseVector.
 		 * @note the previous element to the end could have been released */
 		size_type mEndIndex;
 
-		/** The indices to the released Elements of the PackedVector */
+		/** The indices to the released Elements of the ReleaseVector */
 		std::vector<size_type> mReleasedIndices;
 
 		/** The allocator used for creating objects of type T */
 		A mAllocator;
 
 	public:		// Functions
-		/** Creates a new PackedVector */
-		PackedVector() : mElements(nullptr), mCapacity(0), mEndIndex(0) {};
-		PackedVector(const PackedVector& other);
-		PackedVector(PackedVector&& other);
-		PackedVector(
+		/** Creates a new ReleaseVector */
+		ReleaseVector() : mElements(nullptr), mCapacity(0), mEndIndex(0) {};
+		ReleaseVector(const ReleaseVector& other);
+		ReleaseVector(ReleaseVector&& other);
+		ReleaseVector(
 			const T* elements, std::size_t capacity, std::size_t endIndex,
 			const std::size_t* releasedIndices, std::size_t numReleasedIndices
 		);
 
 		/** Class destructor */
-		~PackedVector();
+		~ReleaseVector();
 
 		/** Assignment operator */
-		PackedVector& operator=(const PackedVector& other);
-		PackedVector& operator=(PackedVector&& other);
+		ReleaseVector& operator=(const ReleaseVector& other);
+		ReleaseVector& operator=(ReleaseVector&& other);
 
-		/** Returns the Element i of the PackedVector
+		/** Returns the Element i of the ReleaseVector
 		 *
 		 * @param	i the index of the Element
 		 * @return	a reference to the Element */
 		T& operator[](size_type i) { return mElements[i]; };
 
-		/** Returns the Element i of the PackedVector
+		/** Returns the Element i of the ReleaseVector
 		 *
 		 * @param	i the index of the Element
 		 * @return	a const reference to the Element */
 		const T& operator[](size_type i) const { return mElements[i]; };
 
-		/** Compares the given PackedVectors
+		/** Compares the given ReleaseVectors
 		 *
-		 * @param	cv1 the first PackedVector to compare
-		 * @param	cv2 the second PackedVector to compare
-		 * @return	true if both PackedVector are equal, false otherwise */
+		 * @param	cv1 the first ReleaseVector to compare
+		 * @param	cv2 the second ReleaseVector to compare
+		 * @return	true if both ReleaseVector are equal, false otherwise */
 		template <typename U>
 		friend bool operator==(
-			const PackedVector<U>& cv1, const PackedVector<U>& cv2
+			const ReleaseVector<U>& cv1, const ReleaseVector<U>& cv2
 		);
 
-		/** Compares the given PackedVectors
+		/** Compares the given ReleaseVectors
 		 *
-		 * @param	cv1 the first PackedVector to compare
-		 * @param	cv2 the second PackedVector to compare
-		 * @return	true if both PackedVector are different, false
+		 * @param	cv1 the first ReleaseVector to compare
+		 * @param	cv2 the second ReleaseVector to compare
+		 * @return	true if both ReleaseVector are different, false
 		 *			otherwise */
 		template <typename U>
 		friend bool operator!=(
-			const PackedVector<U>& cv1, const PackedVector<U>& cv2
+			const ReleaseVector<U>& cv1, const ReleaseVector<U>& cv2
 		);
 
-		/** @return	the initial iterator of the PackedVector */
+		/** @return	the initial iterator of the ReleaseVector */
 		iterator begin() { return iterator(this); };
 
-		/** @return	the initial iterator of the PackedVector */
+		/** @return	the initial iterator of the ReleaseVector */
 		const_iterator begin() const { return const_iterator(this); };
 
-		/** @return	the past the end iterator of the PackedVector */
+		/** @return	the past the end iterator of the ReleaseVector */
 		iterator end()
 		{ return iterator(this, mEndIndex); };
 
-		/** @return	the past the end iterator of the PackedVector */
+		/** @return	the past the end iterator of the ReleaseVector */
 		const_iterator end() const
 		{ return const_iterator(this, mEndIndex); };
 
 		/** @return	the number of Elements that can be added to the
-		 *			PackedVector without reallocating it */
+		 *			ReleaseVector without reallocating it */
 		size_type capacity() const { return mCapacity; };
 
-		/** @return	the number of Elements in the PackedVector */
+		/** @return	the number of Elements in the ReleaseVector */
 		size_type size() const
 		{ return mEndIndex - mReleasedIndices.size(); };
 
-		/** @return	true if the PackedVector has no Elements inside, false
+		/** @return	true if the ReleaseVector has no Elements inside, false
 		 *			otherwise */
 		bool empty() const { return (size() == 0); };
 
-		/** Changes the PackedVector capacity so it can be added up to the
+		/** Changes the ReleaseVector capacity so it can be added up to the
 		 * given elements without reallocating
 		 *
-		 * @param	n the new minimum capacity of the PackedVector */
+		 * @param	n the new minimum capacity of the ReleaseVector */
 		void reserve(std::size_t n);
 
-		/** Removes all the elements in the PackedVector */
+		/** Removes all the elements in the ReleaseVector */
 		void clear();
 
-		/** @return	a pointer to the internal buffer of the PackedVector */
+		/** @return	a pointer to the internal buffer of the ReleaseVector */
 		T* data() { return mElements; };
 
-		/** @return	a pointer to the internal buffer of the PackedVector */
+		/** @return	a pointer to the internal buffer of the ReleaseVector */
 		const T* data() const { return mElements; };
 
 		/** @return	a pointer to the indices that has been released */
@@ -259,7 +263,7 @@ namespace stdext {
 		iterator emplace(Args&&... args);
 
 		/** Removes the element located at the given iterator from the
-		 * PackedVector
+		 * ReleaseVector
 		 *
 		 * @param	it an iterator to the Element
 		 * @return	an iterator to the next Element
@@ -275,20 +279,20 @@ namespace stdext {
 		bool isActive(size_type i) const;
 
 		/** Replicates the size and released elements of the given
-		 * PackedVector into the current one, so they will have the same
+		 * ReleaseVector into the current one, so they will have the same
 		 * active indices
 		 *
-		 * @param	other the PackedVector to replicate
+		 * @param	other the ReleaseVector to replicate
 		 * @param	value the default value with which the elements will be
 		 *			created
 		 * @note	the elements currently stored in the vector will be removed
 		 *			and the new ones will be default initialized */
 		template <typename U>
-		void replicate(const PackedVector<U>& other, const T& value = T());
+		void replicate(const ReleaseVector<U>& other, const T& value = T());
 	};
 
 }
 
-#include "PackedVector.hpp"
+#include "ReleaseVector.hpp"
 
-#endif		// STDEXT_PACKED_VECTOR_H
+#endif		// STDEXT_RELEASE_VECTOR_H
